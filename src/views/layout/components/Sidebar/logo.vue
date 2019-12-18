@@ -1,0 +1,110 @@
+<template>
+  <router-link to="/">
+    <div class="logo" :style="{'justify-content': getVal(), 'align-items': 'center'}">
+      <transition name="fade">
+        <span v-if="isCollapse" class="logo_title is-bold " key="0" :class="{'is-text':!type,'is-img':type}">
+          <template v-if="type">
+            <img :src="website.logo" width="40" height="40" />
+          </template>
+          <template v-else>
+            {{website.logo}}
+          </template>
+        </span>
+      </transition>
+      <transition-group name="fade">
+        <template v-if="!isCollapse">
+          <img src="@/assets/images/logo.png" style="display:block;margin-left:-26px" key="1" height="36px">
+          <!-- <span class="logo_title is-bold" key="1">{{title}} </span> -->
+          <!-- <span class="logo_subtitle" key="2">{{website.author}}</span> -->
+        </template>
+      </transition-group>
+    </div>
+  </router-link>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+export default {
+  name: 'logo',
+  data() {
+    return {
+      userType: -1,
+      title: ''
+    }
+  },
+  props: ['isCollapse'],
+  created() {
+    this.init()
+  },
+  computed: {
+    ...mapGetters(['website']),
+    type: function(val) {
+      return this.website.logo.indexOf('static') !== -1
+    }
+  },
+  methods: {
+    init() {
+      // {label: "档口", value: 1},
+      // {label: "档口买家", value: 3},
+      //  {label: "运营", value: 5},
+      // {label: "后台管理员", value: 6}
+      this.userType = this.getCookie('userType') - 0
+      this.title = this.userType === 1 ? '齐货档口后台' : this.userType === 5 ? '齐货运营后台' : '齐货'
+    },
+    getVal() {
+      return  this.isCollapse ? 'flex-start' : 'center'
+    }
+  }
+}
+</script>
+
+<style scoped="scoped" lang="scss">
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-enter-active {
+  transition: opacity 2.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+.logo {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // width: 230px;
+  height: 64px;
+  line-height: 64px;
+  background: #473C8B;
+  color: #fdfdfd;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.logo_title {
+  padding: 0 5px 0 0;
+  color: #42b983;
+  font-size: 20px;
+  &.is-bold {
+    font-weight: 700;
+  }
+}
+.is-text {
+  position: absolute;
+  top: 0;
+  // left: 20px;
+}
+.is-img {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+.logo_subtitle {
+  font-size: 16px;
+  padding-top: 5px;
+}
+</style>
